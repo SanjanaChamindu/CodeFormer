@@ -187,9 +187,19 @@ class CodeFormerModel(SRModel):
 
                 # perceptual loss
                 if self.cri_perceptual:
-                    l_g_percep = self.cri_perceptual(self.output, self.gt)
-                    l_g_total += l_g_percep
-                    loss_dict['l_g_percep'] = l_g_percep
+                    l_g_percep, l_g_style = self.cri_perceptual(self.output, self.gt)
+                    if l_g_percep is not None:
+                        l_g_total += l_g_percep
+                        loss_dict['l_g_percep'] = l_g_percep
+                    if l_g_style is not None:
+                        l_g_total += l_g_style
+                        loss_dict['l_g_style'] = l_g_style
+
+                # Add this block for identity loss
+                if self.cri_identity:
+                    l_g_identity = self.cri_identity(self.output, self.gt)
+                    l_g_total += l_g_identity
+                    loss_dict['l_g_identity'] = l_g_identity
 
                 # gan loss
                 if  current_iter > self.net_d_start_iter:
