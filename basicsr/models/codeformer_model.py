@@ -88,6 +88,11 @@ class CodeFormerModel(SRModel):
 
         if train_opt.get('gan_opt'):
             self.cri_gan = build_loss(train_opt['gan_opt']).to(self.device)
+        
+        if train_opt.get('identity_opt'):
+            self.cri_identity = build_loss(train_opt['identity_opt']).to(self.device)
+        else:
+            self.cri_identity = None
 
 
         self.fix_generator = train_opt.get('fix_generator', True)
